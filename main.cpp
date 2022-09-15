@@ -16,13 +16,13 @@
 
 #include "olcPixelGameEngine.h"
 
-constexpr int cols = 100;
-constexpr int rows = 100;
+constexpr int cols = 200;
+constexpr int rows = 200;
 
 using grid_t = std::array< std::array< bool, cols>, rows>;
 
 void init_empty(grid_t& grd) {
-	for(auto &i : grd)	std::memset( i.begin(), 0, cols * sizeof(bool));
+	for(auto &i : grd)	std::memset( i.begin(), 0, cols * sizeof( bool));
 }
 void init_rand(grid_t& grd) {
 	for(auto &i : grd)	for(auto &j : i)	j = rand() % 2;
@@ -49,17 +49,17 @@ int get_surr_count(grid_t & grd, int h, int k) {
 }
 void evolve(grid_t & frnt, grid_t & back) {
 	#pragma omp parallel for
-		for(int i=0; i < rows; ++i) {
-			for(int j=0; j < cols; ++j) {
-				int x = get_surr_count(frnt, i, j);
-				if(x == 2)
-					back[ i ][ j ] = frnt[ i ][ j ];
-				else if(x == 3)
-					back[ i ][ j ] = true;
-				else if(x > 3 || x < 2)
-					back[ i ][ j ] = false;
-			}
+	for(int i=0; i < rows; ++i) {
+		for(int j=0; j < cols; ++j) {
+			int x = get_surr_count(frnt, i, j);
+			if(x == 2)
+				back[ i ][ j ] = frnt[ i ][ j ];
+			else if(x == 3)
+				back[ i ][ j ] = true;
+			else if(x > 3 || x < 2)
+				back[ i ][ j ] = false;
 		}
+	}
 }
 
 class game_of_life: public olc::PixelGameEngine {
@@ -92,7 +92,7 @@ public:
 		evolve(*grd_f, *grd_b);
 
 		front ^= true;
-		// Sleep(100);
+		Sleep(100);
 
 		if( GetKey(olc::Key::R).bPressed)
 			init_rand( *grd_b);
